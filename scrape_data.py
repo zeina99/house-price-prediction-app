@@ -1,6 +1,13 @@
-
+import sys
+import time
 import requests
-from bs4 import BeautifulSoup, Tag, NavigableString
+from bs4 import BeautifulSoup
+from requests_html import HTMLSession
+
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import ChromeOptions
 
 # from selenium import webdriver
 # page_num = 1
@@ -9,9 +16,32 @@ PAGES = 200
 property_finder_url = 'https://www.propertyfinder.ae/'
 
 
+# chrome_options = Options()
+# chrome_options.add_argument("--enable-javascript")
+
+# # chrome_options.add_argument("--headless")
+
+# driver = webdriver.Chrome(
+#     ChromeDriverManager().install(), options=chrome_options)
+
+
 def fetch_from_url(url):
-    html = requests.get(url).text
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:39.0)'}
+
+    # driver.get(url)
+    # time.sleep(2)
+    # return driver.page_source.encode("utf-8")
+
+    # session = HTMLSession()
+    # request = session.get(
+    #     url, headers=headers)
+
+    # request.html.render()
+    html = requests.get(url, headers=headers).text
+    time.sleep(1.3)
     return html
+    # return request.html.html
 
 
 def get_soup_from_from_html(html):
@@ -60,7 +90,7 @@ def enclose_list_items_in_quotes(detail_list):
 # removes '\n' and extra white spaces
 
 
-def clean_price_text(apartment_price):
+def clean_price_text(apartment_price: str):
     apartment_price = remove_newlines(apartment_price)
     apartment_price = apartment_price.strip()
     apartment_price = " ".join(apartment_price.split())
@@ -88,6 +118,11 @@ def open_file():
 
 
 def add_headers_to_file():
+    """
+    adds headers to csv file.
+    headers: 'listing_type', 'bedrooms', 'bathrooms', 'area', 'price', 'location', 'description'
+
+    """
     data_file = open('apartment_data.csv', "w")
     data_file.write(
         "listing_type, bedrooms, bathrooms, area, price, location, description\n")
@@ -99,14 +134,15 @@ def close_file(file_to_close):
 
 
 def get_property_description(listing_description_url):
+
     description_page_html = fetch_from_url(listing_description_url)
     description_page_soup = get_soup_from_from_html(
         description_page_html)
     description_div = description_page_soup.find(
         class_="property-page__description")
 
-    classes_in_description_tag = "text-trim property-description__text-trim text-trim--enabled text-trim--expanded"
-    class_list = classes_in_description_tag.split(" ")
+    # classes_in_description_tag = "text-trim property-description__text-trim text-trim--enabled text-trim--expanded"
+    # class_list = classes_in_description_tag.split(" ")
     # text-trim property-description__text-trim text-trim--enabled text-trim--expanded
     property_description = get_div_content(
         "div", "text-trim property-description__text-trim", description_div)
@@ -119,36 +155,6 @@ def get_property_description(listing_description_url):
     return property_description[0]
 
 
-# def recurse_property(child):
-#     text = ''
-
-#     def recurse(childd):
-#         nonlocal text
-#         print(childd)
-#         for child_content in childd:
-#             print(child_content)
-#             # print(
-#             #     f"child: {child}, contents: {child.contents[0].contents[2].text}")
-#             if isinstance(child_content, NavigableString):
-#                 text += child_content
-#             else:
-#                 recurse(child_content.content)
-#             # try:
-#             #     if(len(child_content.contents) == 1):
-#             #         text += " " + child.text
-#             #         return child.text
-#             # except AttributeError:
-#             #     text += child_content
-#             #     return child_content
-
-#     # if child.contents[0].contents[0].text == None:
-#     #     return child.string
-#             # else:
-#             #     recurse(child_content.contents)
-#     recurse(child)
-#     return text
-
-
 def clean_property_description_text(text):
     return text.replace(",", "-")
 
@@ -158,25 +164,33 @@ def main():
     data_file = open_file()
     # add_headers_to_file()
 
-    for counter in range(300, 300 + PAGES):
-
-        base_url = f'https://www.propertyfinder.ae/en/search?c=2&fu=0&l=1&ob=mr&page={counter}&rp=y'
+    for counter in range(1, 41):
+        # dubai link:"https://www.propertyfinder.ae/en/search?c=2&fu=0&l=1&ob=mr&page=1&rp=y"
+        base_url = f'https://www.propertyfinder.ae/en/search?c=2&fu=0&l=4&ob=mr&page={counter}&rp=y'
 
         html = fetch_from_url(base_url)
         soup = get_soup_from_from_html(html)
 
         card_count = 1
+
         # looping over each card list item
         for div in get_all_card_list_divs(soup):
             print(f"Page number: {counter}, card number: {card_count}")
 
-            card_content = div.find_all('div', class_="card__content")[0]
+            try:
+                card_content = div.find_all('div', class_="card__content")[0]
+            except IndexError:
+
+                print("going to the next page")
+                card_count += 1
+                continue
 
             card_header = card_content.find(
+
                 'div', class_="card__header")
 
             card_details = extact_info_from_div(card_header, card_content)
-            data_file.write(", ".join(card_details))
+            data_file.write(",".join(card_details))
 
             # getting the description url
             sub_url = div.contents[0]['href']
@@ -188,14 +202,27 @@ def main():
 
             property_description = get_property_description(
                 listing_description_url)
-            data_file.write(", " + property_description + "\n")
+
+            data_file.write("," + property_description + "\n")
 
             card_count += 1
-            # time.sleep(1)
 
     close_file(data_file)
 
 
 if __name__ == "__main__":
-    print()
-    # main()
+    main()
+    # headers = {
+    #     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:39.0)'}
+    # session = HTMLSession()
+    # r = session.get(
+    #     'https://www.propertyfinder.ae/en/search?c=2&fu=0&l=1&ob=mr&page=1&rp=y', headers=headers)
+    # js = session.get(
+    #     'https://www.propertyfinder.ae/dist/desktop/js/polyfills.a6d8614e23fcc6f90166.js').text
+    # js2 = session.get(
+    #     'https://www.propertyfinder.ae/dist/desktop/js/property-serp.78d53a778b78aca94367.js').text
+    # r.html.render(script=[js, js2])
+
+    # print(r.status_code)
+    # print(r.html.html)
+    # print(r.content)
