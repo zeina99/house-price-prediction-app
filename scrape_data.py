@@ -166,8 +166,8 @@ def main():
 
     for counter in range(1, 41):
         # dubai link:"https://www.propertyfinder.ae/en/search?c=2&fu=0&l=1&ob=mr&page=1&rp=y"
-        base_url = f'https://www.propertyfinder.ae/en/search?c=2&fu=0&l=4&ob=mr&page={counter}&rp=y'
-
+        # base_url = f'https://www.propertyfinder.ae/en/search?c=2&fu=0&l=4&ob=mr&page={counter}&rp=y' -- sharjah link
+        base_url = f"https://www.propertyfinder.ae/en/search?c=2&fu=0&l=1&ob=mr&page={counter}&rp=y"
         html = fetch_from_url(base_url)
         soup = get_soup_from_from_html(html)
 
