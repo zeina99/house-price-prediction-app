@@ -2,5 +2,7 @@
 notes.md
 predict_house_price/
 
+__pycache__/
 selenium.html
 hello.html
+project_final.py
