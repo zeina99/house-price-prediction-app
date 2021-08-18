@@ -1,0 +1,6 @@
+Townhouse
+Apartment
+Villa
+Hotel & Hotel Apartment
+Penthouse
+Duplex
