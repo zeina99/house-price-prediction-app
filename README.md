@@ -1,7 +1,8 @@
 # house-price-prediction
 
-App react native frontend: https://github.com/zeina99/Real-Estate-Price-Prediction-App 
-App flask backend: https://github.com/zeina99/Real-Estate-Price-Prediction-server 
+App frontend: https://github.com/zeina99/Real-Estate-Price-Prediction-App 
+
+App backend: https://github.com/zeina99/Real-Estate-Price-Prediction-server 
 
 Predicting real estate rental price in Dubai
 
