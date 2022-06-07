@@ -1,10 +1,14 @@
-# house-price-prediction
+# House-price-prediction
 
-**App frontend**: https://github.com/zeina99/Real-Estate-Price-Prediction-App 
+This repositry contains the machine learning model code.
 
-**App backend**: https://github.com/zeina99/Real-Estate-Price-Prediction-server 
+The two repositories below link to the mobile application that makes use of the ML model.
 
-Predicting real estate rental price in Dubai
+### **App frontend**: https://github.com/zeina99/Real-Estate-Price-Prediction-App 
+
+### **App backend**: https://github.com/zeina99/Real-Estate-Price-Prediction-server 
+
+
 
 ## Data Collection
 
