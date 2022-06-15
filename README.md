@@ -4,9 +4,9 @@ This repositry contains the machine learning model code.
 
 The two repositories below link to the mobile application that makes use of the ML model.
 
-### **App frontend**: https://github.com/zeina99/Real-Estate-Price-Prediction-App 
+### **App frontend (React Native)**: https://github.com/zeina99/Real-Estate-Price-Prediction-App 
 
-### **App backend**: https://github.com/zeina99/Real-Estate-Price-Prediction-server 
+### **App backend (Flask)**: https://github.com/zeina99/Real-Estate-Price-Prediction-server 
 
 
 
