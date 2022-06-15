@@ -1,4 +1,4 @@
-# House-price-prediction
+# House-price-prediction-app
 
 This repositry contains the machine learning model code.
 
